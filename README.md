@@ -4,93 +4,76 @@
 
 # Astrea
 
-**A native Linux desktop for people — designed with autonomous agents in mind.**
+**A modern, native Linux desktop environment built for performance, customization, and a seamless user experience.**
 
 [Typhon](https://github.com/agonyG4/Typhon) · [Eclipse](https://github.com/agonyG4/Eclipse) · [Orbit](https://github.com/agonyG4/Orbit)
 
 </div>
 
-> [!IMPORTANT]
-> **Astrea is under active development and is not a production-ready desktop distribution.**
->
-> This repository preserves the legacy AstreaOS distribution/runtime and serves as the project's entry point. The active desktop architecture lives in the repositories linked above. Consult their documentation for current build requirements and behavior.
+Astrea is an open-source Linux desktop project built around a custom Wayland compositor, a native desktop shell, and an integrated ecosystem of applications.
 
-## Overview
-
-Astrea is a Linux desktop project built around a native Wayland compositor, a dedicated desktop shell, and a suite of native applications. It aims to feel like a complete, customizable desktop for everyday use while laying the groundwork for a different kind of computing: humans and autonomous software agents operating in the same environment without fighting for control of the same screen or input devices.
-
-The immediate priority is a reliable traditional desktop. Agent-native capabilities are a **long-term architectural direction**, not a feature currently available to end users.
+Rather than building on top of an existing desktop environment, Astrea develops its core components independently, with a focus on performance, visual consistency, responsiveness, and architectural simplicity.
 
 ## Architecture
 
-| Component | Responsibility | Current implementation |
-| --- | --- | --- |
-| **[Typhon](https://github.com/agonyG4/Typhon)** | Wayland compositor and window manager | Rust; native seat and DRM/KMS session, window management, rendering, input, presentation scheduling and XWayland integration |
-| **[Eclipse](https://github.com/agonyG4/Eclipse)** | Desktop shell | Qt Quick / C++; Spotlight launcher, Alt-Tab switcher, Dock foundation, shared application-launching infrastructure and screenshot customization work |
-| **[Orbit](https://github.com/agonyG4/Orbit)** | Native applications and shared UI infrastructure | Qt 6 / C++ Explorer with Rust filesystem and integration components, file chooser portal, shared QML modules and tests |
-| **[AstreaOS](https://github.com/agonyG4/AstreaOS)** | Legacy runtime and project entry point | Preserved distribution/runtime code; not the source of truth for the new desktop |
+Astrea consists of three primary projects:
 
-### Typhon — the graphical foundation
+### Typhon — Wayland Compositor
 
-Typhon is a native Wayland compositor, built in Rust. It owns the Wayland server, scene and window lifecycle, rendering, native input, and presentation to the display.
+[Typhon](https://github.com/agonyG4/Typhon) is a native Wayland compositor written in Rust, responsible for window management, rendering, input handling, and display presentation.
 
-Current engineering areas include:
+Key capabilities include:
 
-- Native DRM/KMS startup, with Atomic KMS preferred and defined fallbacks.
-- Dynamic window management, fullscreen transitions, decorations and animations.
-- Deadline-aware frame presentation, dedicated KMS commit work and adaptive double/triple buffering.
-- Validated primary-plane direct scanout and capability-gated VRR, tearing and hardware-cursor paths.
-- Damage-aware effects, blur and rendering optimizations.
-- Managed XWayland support for applications that need it.
+- Native DRM/KMS rendering and display management.
+- Dynamic window management and animations.
+- Adaptive double and triple buffering.
+- Direct scanout and variable refresh rate (VRR).
+- Frame scheduling and presentation optimizations.
+- GPU-accelerated visual effects.
+- XWayland compatibility.
 
-Typhon currently targets a **single display output**. Multi-output layout and hotplug, multi-GPU operation, and HDR are not supported; color management is limited to sRGB. Some optimizations depend on driver and hardware support and may fall back safely.
+### Eclipse — Desktop Shell
 
-Read the [Typhon README](https://github.com/agonyG4/Typhon#readme), [native session guide](https://github.com/agonyG4/Typhon/blob/main/docs/NATIVE_SESSION.md), and [known issues](https://github.com/agonyG4/Typhon/blob/main/docs/KNOWN_ISSUES.md) for supported configuration, launch commands, and limitations.
+[Eclipse](https://github.com/agonyG4/Eclipse) provides the graphical desktop experience, built primarily with C++ and Qt Quick.
 
-### Eclipse — the desktop experience
+Its components include:
 
-Eclipse provides Astrea's user-facing shell through native Qt Quick components. Its codebase includes:
+- **Spotlight:** Application launcher and search.
+- **Dock:** Application launching and pinned applications.
+- **AltTab:** Window switching.
+- **Screenshots:** Screenshot interface and configuration.
+- **Shared infrastructure:** Application management, desktop integration, and common services.
 
-- **Spotlight:** launcher and application search.
-- **AltTab:** window-switching interface and application identity resolution.
-- **Dock:** a Layer Shell-based foundation for pinned application launching.
-- **Shared infrastructure:** supervised application launching, desktop-entry catalog and icon services.
-- **Screenshot UI:** customization and capture lifecycle work.
+### Orbit — Native Applications
 
-The Dock is still foundational: Typhon does not yet expose the public window-management protocol needed to report running, focused, or minimized app state, so Eclipse does not pretend those integrations are finished.
+[Orbit](https://github.com/agonyG4/Orbit) contains Astrea's native application ecosystem, developed primarily with C++, Qt 6, and Rust.
 
-See [Eclipse](https://github.com/agonyG4/Eclipse) for current prerequisites and implementation status.
+Its main application is **Explorer**, a native file manager designed for efficient filesystem navigation and seamless desktop integration.
 
-### Orbit — native applications
+Orbit also provides shared UI components, application services, and system integration infrastructure.
 
-Orbit hosts Astrea's native application stack. Its current production application is **Explorer**, a Qt 6/C++ file manager with Rust-backed filesystem and integration components. The repository also contains the file chooser portal, application-launching services, shared QML components, localization infrastructure, and qualification tests.
+## Design Philosophy
 
-Legacy applications are preserved under `old/` and are not part of the active build. See the [Orbit README](https://github.com/agonyG4/Orbit#readme) and its [architecture documentation](https://github.com/agonyG4/Orbit/blob/main/docs/ARCHITECTURE.md).
+Astrea is guided by four principles:
 
-## Agent-native vision
+- **Performance:** Minimize unnecessary overhead and prioritize responsiveness.
+- **Consistency:** Create a unified experience across the compositor, shell, and applications.
+- **Customization:** Give users meaningful control over their desktop environment.
+- **Native Integration:** Design components to work together without unnecessary abstraction layers.
 
-Astrea is exploring an **Agent Control Plane** integrated into the operating environment instead of bolting a chatbot or screen-clicking automation tool onto a desktop.
+## Project Status
 
-The proposed direction includes persistent agent identities and tasks, agent-owned or shared workspaces, independent logical input seats, headless or virtual graphical sessions, semantic access to windows and applications, capability-based permissions, auditable actions, and explicit human control. Conventional UI automation would remain a fallback where a native API or semantic interface is unavailable.
+Astrea is currently under active development and is not yet intended as a production-ready desktop environment.
 
-**These are design goals, not claims of shipping functionality.** The traditional human-operated desktop remains the foundation.
+The compositor, shell, and applications are maintained in separate repositories:
 
-## Development status
+| Repository | Description |
+|---|---|
+| [Typhon](https://github.com/agonyG4/Typhon) | Wayland compositor and window manager |
+| [Eclipse](https://github.com/agonyG4/Eclipse) | Desktop shell |
+| [Orbit](https://github.com/agonyG4/Orbit) | Native applications |
+| [AstreaOS](https://github.com/agonyG4/AstreaOS) | Legacy runtime and project entry point |
 
-Astrea is an experimental, multi-repository project. The active components are built and tested independently, and their integration is still evolving. There is no supported one-command install or stable end-user release documented here.
+---
 
-If you want to work with the current code, start with the component repository relevant to your changes:
-
-- **Compositor, rendering or presentation:** [Typhon](https://github.com/agonyG4/Typhon)
-- **Desktop shell or launcher:** [Eclipse](https://github.com/agonyG4/Eclipse)
-- **Explorer, native apps or shared QML:** [Orbit](https://github.com/agonyG4/Orbit)
-
-Follow each repository's build instructions rather than using legacy AstreaOS runtime scripts as documentation for the current architecture.
-
-## Philosophy
-
-A desktop should remain fast, predictable and useful without AI. Windows, keyboard and mouse input, application launching, customization, and familiar workflows come first.
-
-Astrea's longer-term bet is that personal computers can support more than one kind of operator — with clear boundaries between human authority and autonomous work.
-
-**A desktop for humans. An architecture ready to evolve beyond human-only interaction.**
+**Astrea — A desktop built from the ground up.**
